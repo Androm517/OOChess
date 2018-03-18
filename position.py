@@ -12,17 +12,40 @@ class Position:
     def subtract(self, position):
         x = self.coordinates[0] - position.coordinates[0]
         y = self.coordinates[1] - position.coordinates[1]
-        return Position( (x, y))
+        tmp = Position('a1')
+        tmp.coordinates = (x, y)
+        return tmp
 
-    def dot(self, position):
-        dot_product = 0
-        for i in [0, 1]:
-            dot_product = self.coordinates[i] + position.coordinates[i]
-        return dot_product
+    def add(self, position):
+        x = self.coordinates[0] + position.coordinates[0]
+        y = self.coordinates[1] + position.coordinates[1]
+        tmp = Position('a1')
+        tmp.coordinates = (x, y)
+        return tmp
 
-    def isColumnRowCoordinatesDifferent(self):
+    def length(self):
+        return abs(self.coordinates[0]) + abs(self.coordinates[1])
+
+    def isRowGreaterThanZero(self):
+        if self.coordinates[1] > 0:
+            return True
+        else:
+            return False
+
+    def unit(self):
         col, row = self.coordinates
-        if col != row:
+        tmp = Position('a1')
+        if self.isColumnRowCoordinatesEqual():
+            tmp.coordinates = (int(col / abs(col)), int(row / abs(row)))
+        elif col == 0:
+            tmp.coordinates = (0, int(row / abs(row)))
+        elif row == 0:
+            tmp.coordinates = (int(col / abs(col)), 0)
+        return tmp
+
+    def isColumnRowCoordinatesEqual(self):
+        col, row = self.coordinates
+        if col == row:
             return True
         else:
             return False
