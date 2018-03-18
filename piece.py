@@ -21,6 +21,11 @@ class Piece:
             return True
         return False
 
+    def hasName(self, name):
+        if self.name == name:
+            return name
+        return False
+
     def __eq__(self, other):
         """Two pieces are equal if they belong to the same team and stand at the same position"""
         if self.color == other.color and self.position == other.position:
