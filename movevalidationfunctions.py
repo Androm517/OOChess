@@ -11,9 +11,7 @@ def validatePawn(active_piece, at_position, to_position, gameboard):
     at_position = position.Position(at_position)
     to_position = position.Position(to_position)
     unit_difference = at_position.subtract(to_position).unit()
-    print(f'unit_difference: {unit_difference.coordinates}')
     step = to_position.subtract(at_position)
-    print(f'step: {str(step)}')
     passive_piece = gameboard.getPieceAtPosition(str(to_position))
     if active_piece.hasColor('white'):
         one_step = position.Position('a2')
@@ -35,15 +33,12 @@ def validatePawn(active_piece, at_position, to_position, gameboard):
         return checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_difference), gameboard,
                                                       unit_difference)
     elif active_piece.start_position and step == two_step and passive_piece is None:
-        print('Make two steps with pawn')
         return checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_difference), gameboard,
                                                       unit_difference)
     else:
         return False
 
 def checkSquaresForBlockingPiecesRecursive(at_position, check_position, gameboard, unit_difference):
-    print(f'check_position: {check_position.coordinates}')
-    print(f'check_position: {str(check_position)}')
     if check_position == at_position:
         return True
     passive_piece = gameboard.getPieceAtPosition(str(check_position))
