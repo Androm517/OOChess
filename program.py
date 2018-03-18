@@ -62,14 +62,16 @@ def updateAndViewBoard():
 
 updateAndViewBoard()
 print()
+color = 'white'
 while True:
     msg = ui.getMsg()
     if msg == 'q':
         print('Hejdå')
         break
-    color, at_position, to_position = msg
+    at_position, to_position = msg
     if validateMove():
         moveAtPositionToPositionAndCapture()
+        color = 'black' if color == 'white' else 'white'
     updateAndViewBoard()
     print()
 
