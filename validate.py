@@ -83,9 +83,9 @@ class Validate:
 
     def validateMove(self, active_piece, at_position, to_position, gameboard):
         if self.validatePieceMove(active_piece, at_position, to_position, gameboard):
-            passive_piece = self.temporarelyMoveActivePiece(active_piece, at_position, gameboard, to_position)
+            passive_piece = self.temporarelyMoveActivePiece(active_piece, at_position, to_position, gameboard)
             king_is_in_check = self.isKingInCheck(active_piece, gameboard)
-            self.moveActivePiceBack(active_piece, at_position, gameboard, passive_piece, to_position)
+            self.moveActivePiceBack(active_piece, passive_piece, at_position, to_position, gameboard)
             if not king_is_in_check:
                 return True
             else:
