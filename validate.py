@@ -2,11 +2,6 @@ import position
 
 
 class Validate:
-    def __init__(self):
-        self.white_castle = True
-        self.black_castle = True
-        self.en_passant = []
-
     def validatePawn(self, active_piece, at_position, to_position, unit_direction, gameboard):
         step = to_position.subtract(at_position)
         one_step, two_step, capture = self.convertStrPositionToObjPosition('a2', 'a3', 'b2')
@@ -111,7 +106,6 @@ class Validate:
         for board_position in arg:
             positions.append(position.Position(board_position))
         return positions
-
 
     def checkSquaresForBlockingPiecesRecursive(self, at_position, check_position, unit_direction, gameboard):
         if check_position == at_position:
