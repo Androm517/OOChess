@@ -19,6 +19,9 @@ class Piece:
     def getPieceName(self):
         return self.name
 
+    def getColor(self):
+        return self.color
+
     def hasColor(self, color):
         if self.color == color:
             return True
