@@ -13,8 +13,11 @@ class Piece:
         self.position = position.Position(board_position)
         self.start_position = False
 
-    def getName(self):
+    def getPieceSymbol(self):
         return self.name_representation
+
+    def getPieceName(self):
+        return self.name
 
     def hasColor(self, color):
         if self.color == color:

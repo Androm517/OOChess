@@ -25,7 +25,7 @@ class Gameboard:
             for col in 'abcdefgh':
                 tmp = self.board_state.get(col + row, None)
                 if tmp is not None:
-                    s += tmp.getName()
+                    s += tmp.getPieceSymbol()
                 else:
                     s += '#'
         print(s)
