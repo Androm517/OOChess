@@ -39,7 +39,7 @@ class Gameboard:
 
     def getKingWithColor(self, color):
         for _, p in self.board_state.items():
-            if p.hasColor(color):
+            if p.hasName('king') and p.hasColor(color):
                 return p
 
     def viewBoard(self):

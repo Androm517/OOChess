@@ -67,7 +67,8 @@ class Validate:
         king = gameboard.getWhiteKing() if active_piece.hasColor('white') else gameboard.getBlackKing()
         pieces = gameboard.getAllBlackPieces() if active_piece.hasColor('white') else gameboard.getAllWhitePieces()
         for piece in pieces:
-            if self.validatePieceMove(piece, piece.getPosition(), king.getPosition(), gameboard):
+            tmp = self.validatePieceMove(piece, piece.getPosition(), king.getPosition(), gameboard)
+            if tmp:
                 return True
         return False
 
@@ -81,10 +82,20 @@ class Validate:
         return valid_move
 
     def validateMove(self, active_piece, at_position, to_position, gameboard):
-        valid_move = self.validatePieceMove(active_piece, at_position, to_position, gameboard)
-        is_king_in_check = self.isKingInCheck(active_piece, gameboard)
-        if not is_king_in_check and valid_move:
-            return True
+        if self.validatePieceMove(active_piece, at_position, to_position, gameboard):
+            passive_piece = gameboard.getPieceAtPosition(to_position)
+            del gameboard.board_state[at_position]
+            gameboard.board_state[to_position] = active_piece
+            king_is_in_check = self.isKingInCheck(active_piece, gameboard)
+            if passive_piece is None:
+                del gameboard.board_state[to_position]
+            else:
+                gameboard.board_state[to_position] = passive_piece
+            gameboard.board_state[at_position] = active_piece
+            if not king_is_in_check:
+                return True
+            else:
+                return False
         else:
             return False
 
