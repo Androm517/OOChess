@@ -20,13 +20,13 @@ class Gameboard:
 
     def getAllPiecesWithColor(self, color):
         pieces = []
-        for i, p in enumerate(self.board_state):
-            if p.getColor == color:
+        for _, p in self.board_state.items():
+            if p.getColor() == color:
                 pieces.append(p)
         return pieces
 
     def getKingWithColor(self, color):
-        for i, p in enumerate(self.board_state):
+        for _, p in self.board_state.items():
             if p.getColor() == color:
                 return p
 
