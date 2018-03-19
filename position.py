@@ -28,12 +28,12 @@ class Position:
         return tmp
 
     def length(self):
-        return abs(self.coordinates[0]) + abs(self.coordinates[1])
+        return int(abs(self.coordinates[0]) + abs(self.coordinates[1]))
 
     def unit(self):
         col, row = self.coordinates
         tmp = Position('a1')
-        if self.isColumnRowCoordinatesEqual():
+        if self.rowLength() == self.columnLength():
             tmp.coordinates = (int(col / abs(col)), int(row / abs(row)))
         elif col == 0:
             tmp.coordinates = (0, int(row / abs(row)))
@@ -41,19 +41,14 @@ class Position:
             tmp.coordinates = (int(col / abs(col)), 0)
         return tmp
 
-    def isColumnRowCoordinatesEqual(self):
+    def rowLength(self):
         col, row = self.coordinates
-        if col == row:
-            return True
-        else:
-            return False
+        return int(abs(row))
 
-    def isColumnOrRowCoordinateZero(self):
+
+    def columnLength(self):
         col, row = self.coordinates
-        if col == 0 or row == 0:
-            return True
-        else:
-            return False
+        return int(abs(col))
 
     def __eq__(self, other):
         col, row = self.coordinates

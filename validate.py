@@ -29,37 +29,45 @@ class Validate:
 
 
     def validateRook(self, active_piece, at_position, to_position, unit_direction, gameboard):
-        if unit_direction.isColumnOrRowCoordinateZero():
+        if unit_direction.columnLength() == 0 or unit_direction.rowLength() == 0:
             return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
         else:
             return False
 
     def validateKnight(self, active_piece, at_position, to_position, unit_direction, gameboard):
-        return True
+        difference = to_position.subtract(at_position)
+        length = difference.length()
+        if length == 3 and (difference.columnLength() == 1 or difference.columnLength() == 2):
+            return True
+        else:
+            return False
 
     def validateBishop(self, active_piece, at_position, to_position, unit_direction, gameboard):
-        return True
+        difference = at_position.subtract(to_position)
+        if difference.columnLength() == difference.rowLength():
+            return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
+        else:
+            return False
 
     def validateQueen(self, active_piece, at_position, to_position, unit_direction, gameboard):
-        return True
+        difference = at_position.subtract(to_position)
+        if difference.columnLength() == 0 or difference.rowLength() == 0 or (difference.columnLength() == difference.rowLength()):
+            return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
+        else:
+            return False
 
     def validateKing(self, active_piece, at_position, to_position, unit_direction, gameboard):
-        return True
+        difference = at_position.subtract(to_position)
+        if difference.length() == 1:
+            return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
+        else:
+            return False
 
     def isKingInCheck(self, active_piece, gameboard):
         king = gameboard.getWhiteKing() if active_piece.hasColor('white') else gameboard.getBlackKing()
         pieces = gameboard.getAllBlackPieces() if active_piece.hasColor('white') else gameboard.getAllWhitePieces()
         for piece in pieces:
-            if piece.hasName('knight'):
-                continue
-            if piece.hasName('bishop'):
-                continue
-            if piece.hasName('queen'):
-                continue
-            if piece.hasName('king'):
-                continue
-            is_king_in_check = self.validatePieceMove(piece, piece.getPosition(), king.getPosition(), gameboard)
-            if is_king_in_check:
+            if self.validatePieceMove(piece, piece.getPosition(), king.getPosition(), gameboard):
                 return True
         return False
 
