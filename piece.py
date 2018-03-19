@@ -13,6 +13,9 @@ class Piece:
         self.position = position.Position(board_position)
         self.start_position = False
 
+    def getPosition(self):
+        return self.position
+
     def getPieceSymbol(self):
         return self.name_representation
 
