@@ -18,6 +18,18 @@ class Gameboard:
     def cleanBoardState(self):
         self.board_state = {}
 
+    def getAllPiecesWithColor(self, color):
+        pieces = []
+        for i, p in enumerate(self.board_state):
+            if p.getColor == color:
+                pieces.append(p)
+        return pieces
+
+    def getKingWithColor(self, color):
+        for i, p in enumerate(self.board_state):
+            if p.getColor() == color:
+                return p
+
     def viewBoard(self):
         s = '  ABCDEFGH'
         for row in '87654321':
