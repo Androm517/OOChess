@@ -30,12 +30,6 @@ class Position:
     def length(self):
         return abs(self.coordinates[0]) + abs(self.coordinates[1])
 
-    def isRowGreaterThanZero(self):
-        if self.coordinates[1] > 0:
-            return True
-        else:
-            return False
-
     def unit(self):
         col, row = self.coordinates
         tmp = Position('a1')
