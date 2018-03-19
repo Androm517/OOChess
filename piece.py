@@ -14,16 +14,13 @@ class Piece:
         self.start_position = False
 
     def getPosition(self):
-        return self.position
+        return str(self.position)
 
     def getPieceSymbol(self):
         return self.name_representation
 
     def getPieceName(self):
         return self.name
-
-    def getColor(self):
-        return self.color
 
     def hasColor(self, color):
         if self.color == color:

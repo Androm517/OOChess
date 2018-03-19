@@ -18,16 +18,28 @@ class Gameboard:
     def cleanBoardState(self):
         self.board_state = {}
 
+    def getAllWhitePieces(self):
+        return self.getAllPiecesWithColor('white')
+
+    def getAllBlackPieces(self):
+        return self.getAllPiecesWithColor('black')
+
     def getAllPiecesWithColor(self, color):
         pieces = []
         for _, p in self.board_state.items():
-            if p.getColor() == color:
+            if p.hasColor(color):
                 pieces.append(p)
         return pieces
 
+    def getWhiteKing(self):
+        return self.getKingWithColor('white')
+
+    def getBlackKing(self):
+        return self.getKingWithColor('black')
+
     def getKingWithColor(self, color):
         for _, p in self.board_state.items():
-            if p.getColor() == color:
+            if p.hasColor(color):
                 return p
 
     def viewBoard(self):

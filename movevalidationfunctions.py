@@ -54,7 +54,7 @@ def isKingInCheck(active_piece, gameboard):
             continue
         if piece.hasName('king'):
             continue
-        is_king_in_check = validatePieceMove(piece, str(piece.getPosition()), str(king.getPosition()), gameboard)
+        is_king_in_check = validatePieceMove(piece, piece.getPosition(), king.getPosition(), gameboard)
         if is_king_in_check:
             return True
     return False
