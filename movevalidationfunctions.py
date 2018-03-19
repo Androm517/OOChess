@@ -42,12 +42,27 @@ def validateQueen(active_piece, at_position, to_position, unit_direction, gamebo
 def validateKing(active_piece, at_position, to_position, unit_direction, gameboard):
     return True
 
+def isKingInCheck(king, pieces, gameboard):
+    for piece in pieces:
+        is_king_in_check = validateMove(piece, str(piece.position), str(king.position), gameboard)
+        if is_king_in_check:
+            return True
+    return False
+
 def validateMove(active_piece, at_position, to_position, gameboard):
     validate_functions = {'pawn': validatePawn, 'rook': validateRook, 'knight': validateKnight, 'bishop': validateBishop, 'queen': validateQueen, 'king': validateKing}
     at_position, to_position = convertStrPositionToObjPosition(at_position, to_position)
     unit_direction = at_position.subtract(to_position).unit()
     validate_function = validate_functions[active_piece.getPieceName()]
-    return validate_function(active_piece, at_position, to_position, unit_direction, gameboard)
+    valid_move = validate_function(active_piece, at_position, to_position, unit_direction, gameboard)
+    king_color = active_piece.color
+    king = gameboard.getKingWithColor(king_color)
+    passive_color = 'black' if king_color == 'white' else 'white'
+    pieces = gameboard.getAllPiecesWithColor(passive_color)
+    if not isKingInCheck(king, pieces, gameboard) and valid_move:
+        return True
+    else:
+        return False
 
 def convertStrPositionToObjPosition(*arg):
     positions = []
