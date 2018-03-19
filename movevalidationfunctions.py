@@ -1,15 +1,7 @@
 import position
 
 
-def validateMove(active_piece, at_position, to_position, gameboard):
-    at_position, to_position = convertStrPositionToObjPosition(at_position, to_position)
-    unit_direction = at_position.subtract(to_position).unit()
-    if active_piece.hasName('pawn'):
-        return validatePawn(active_piece, at_position, to_position, unit_direction, gameboard)
-    elif active_piece.hasName('rook'):
-        return validateRook(active_piece, at_position, to_position, unit_direction, gameboard)
-    else:
-        return True
+
 
 def validatePawn(active_piece, at_position, to_position, unit_direction, gameboard):
     step = to_position.subtract(at_position)
@@ -33,9 +25,29 @@ def validatePawn(active_piece, at_position, to_position, unit_direction, gameboa
 
 
 def validateRook(active_piece, at_position, to_position, unit_direction, gameboard):
-    if unit_direction.isColumnOrRowCoordinateZero:
+    if unit_direction.isColumnOrRowCoordinateZero():
         return checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
+    else:
+        return False
 
+def validateKnight(active_piece, at_position, to_position, unit_direction, gameboard):
+    return True
+
+def validateBishop(active_piece, at_position, to_position, unit_direction, gameboard):
+    return True
+
+def validateQueen(active_piece, at_position, to_position, unit_direction, gameboard):
+    return True
+
+def validateKing(active_piece, at_position, to_position, unit_direction, gameboard):
+    return True
+
+def validateMove(active_piece, at_position, to_position, gameboard):
+    validate_functions = {'pawn': validatePawn, 'rook': validateRook, 'knight': validateKnight, 'bishop': validateBishop, 'queen': validateQueen, 'king': validateKing}
+    at_position, to_position = convertStrPositionToObjPosition(at_position, to_position)
+    unit_direction = at_position.subtract(to_position).unit()
+    validate_function = validate_functions[active_piece.getPieceName()]
+    return validate_function(active_piece, at_position, to_position, unit_direction, gameboard)
 
 def convertStrPositionToObjPosition(*arg):
     positions = []
