@@ -1,11 +1,12 @@
 import userinput
 import gameboard
 import piece
-import movevalidationfunctions
+import validate
 
 
 ui = userinput.UserInput()
 gb = gameboard.Gameboard()
+vm = validate.Validate()
 
 captured_pieces = []
 white_pieces = []
@@ -49,7 +50,7 @@ def validateMove():
     passive_piece = gb.getPieceAtPosition(to_position)
     if not active_piece.hasColor(color) or (passive_piece is not None and passive_piece.hasColor(color)):
         return False
-    if movevalidationfunctions.validateMove(active_piece, at_position, to_position, gb):
+    if vm.validateMove(active_piece, at_position, to_position, gb):
         return True
     else:
         return False
