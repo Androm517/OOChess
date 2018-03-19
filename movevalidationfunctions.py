@@ -42,7 +42,9 @@ def validateQueen(active_piece, at_position, to_position, unit_direction, gamebo
 def validateKing(active_piece, at_position, to_position, unit_direction, gameboard):
     return True
 
-def isKingInCheck(king, pieces, gameboard):
+def isKingInCheck(active_piece, gameboard):
+    king = gameboard.getWhiteKing() if active_piece.hasColor('white') else gameboard.getBlackKing()
+    pieces = gameboard.getAllBlackPieces() if active_piece.hasColor('white') else gameboard.getAllWhitePieces()
     for piece in pieces:
         if piece.hasName('knight'):
             continue
@@ -68,11 +70,8 @@ def validatePieceMove(active_piece, at_position, to_position, gameboard):
 
 def validateMove(active_piece, at_position, to_position, gameboard):
     valid_move = validatePieceMove(active_piece, at_position, to_position, gameboard)
-    king_color = active_piece.getColor()
-    king = gameboard.getKingWithColor(king_color)
-    passive_color = 'black' if king_color == 'white' else 'white'
-    pieces = gameboard.getAllPiecesWithColor(passive_color)
-    if not isKingInCheck(king, pieces, gameboard) and valid_move:
+    is_king_in_check = isKingInCheck(active_piece, gameboard)
+    if not is_king_in_check and valid_move:
         return True
     else:
         return False
