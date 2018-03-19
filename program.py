@@ -48,7 +48,9 @@ def moveAtPositionToPositionAndCapture():
 def validateMove():
     active_piece = gb.getPieceAtPosition(at_position)
     passive_piece = gb.getPieceAtPosition(to_position)
-    if not active_piece.hasColor(color) or (passive_piece is not None and passive_piece.hasColor(color)):
+    if active_piece is None or not active_piece.hasColor(color):
+        return False
+    if passive_piece is not None and passive_piece.hasColor(color):
         return False
     if vm.validateMove(active_piece, at_position, to_position, gb):
         return True
