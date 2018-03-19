@@ -83,21 +83,28 @@ class Validate:
 
     def validateMove(self, active_piece, at_position, to_position, gameboard):
         if self.validatePieceMove(active_piece, at_position, to_position, gameboard):
-            passive_piece = gameboard.getPieceAtPosition(to_position)
-            del gameboard.board_state[at_position]
-            gameboard.board_state[to_position] = active_piece
+            passive_piece = self.temporarelyMoveActivePiece(active_piece, at_position, gameboard, to_position)
             king_is_in_check = self.isKingInCheck(active_piece, gameboard)
-            if passive_piece is None:
-                del gameboard.board_state[to_position]
-            else:
-                gameboard.board_state[to_position] = passive_piece
-            gameboard.board_state[at_position] = active_piece
+            self.moveActivePiceBack(active_piece, at_position, gameboard, passive_piece, to_position)
             if not king_is_in_check:
                 return True
             else:
                 return False
         else:
             return False
+
+    def moveActivePiceBack(self, active_piece, passive_piece, at_position, to_position, gameboard):
+        if passive_piece is None:
+            del gameboard.board_state[to_position]
+        else:
+            gameboard.board_state[to_position] = passive_piece
+        gameboard.board_state[at_position] = active_piece
+
+    def temporarelyMoveActivePiece(self, active_piece, at_position, to_position, gameboard):
+        passive_piece = gameboard.getPieceAtPosition(to_position)
+        del gameboard.board_state[at_position]
+        gameboard.board_state[to_position] = active_piece
+        return passive_piece
 
     def convertStrPositionToObjPosition(self, *arg):
         positions = []
