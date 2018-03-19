@@ -27,6 +27,12 @@ class Position:
         tmp = self.createPositionWithCoordinates(x, y)
         return tmp
 
+    def equals(self, chessboard_position):
+        if str(self) == chessboard_position:
+            return True
+        else:
+            return False
+
     def length(self):
         return int(abs(self.coordinates[0]) + abs(self.coordinates[1]))
 
