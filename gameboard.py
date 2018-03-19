@@ -1,4 +1,7 @@
-
+"""
+class: Gameboard
+Beskrivning: Håller spelbrädets tillstånd.
+"""
 
 class Gameboard:
     def __init__(self):
