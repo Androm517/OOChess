@@ -12,15 +12,19 @@ class Position:
     def subtract(self, position):
         x = self.coordinates[0] - position.coordinates[0]
         y = self.coordinates[1] - position.coordinates[1]
-        tmp = Position('a1')
-        tmp.coordinates = (x, y)
+        tmp = self.createPositionWithCoordinates(x, y)
         return tmp
 
     def add(self, position):
         x = self.coordinates[0] + position.coordinates[0]
         y = self.coordinates[1] + position.coordinates[1]
-        tmp = Position('a1')
-        tmp.coordinates = (x, y)
+        tmp = self.createPositionWithCoordinates(x, y)
+        return tmp
+
+    def invert(self):
+        x = -self.coordinates[0]
+        y = -self.coordinates[1]
+        tmp = self.createPositionWithCoordinates(x, y)
         return tmp
 
     def length(self):
@@ -69,3 +73,8 @@ class Position:
         col, row = self.coordinates
         col, row = chr( col + ord('a')), chr( row + ord('1'))
         return col + row
+
+    def createPositionWithCoordinates(self, x, y):
+        tmp = Position('a1')
+        tmp.coordinates = (x, y)
+        return tmp
