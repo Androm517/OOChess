@@ -28,8 +28,7 @@ class Validate:
         at_position, to_position = self.convertStrPositionToObjPosition(at_position, to_position)
         unit_direction = at_position.subtract(to_position).unit()
         validate_function = validate_functions[active_piece.getPieceName()]
-        valid_move = validate_function(active_piece, at_position, to_position, unit_direction, gameboard)
-        return valid_move
+        return validate_function(active_piece, at_position, to_position, unit_direction, gameboard)
 
     def validatePawn(self, active_piece, at_position, to_position, unit_direction, gameboard):
         step = to_position.subtract(at_position)
