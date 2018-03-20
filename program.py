@@ -63,7 +63,7 @@ class Program:
         self.gb.viewBoard()
         print()
 
-    def specialRuleMessage(self, msg):
+    def validateSpecialRuleAndMovePiece(self, msg):
         if msg == 'short castle':
             if self.vm.validateShortCastle(self.color, self.gb):
                 castle_king = self.gb.getWhiteKing() if self.color == 'white' else self.gb.getBlackKing()
@@ -94,17 +94,17 @@ class Program:
                 return True
         return False
 
-    def moveMessage(self, at_position, to_position):
-        active_piece = self.gb.getPieceAtPosition(at_position)
-        if active_piece is not None:
-            if self.validateMove(self.color, at_position, to_position):
-                if active_piece.hasName('pawn') and '2' in at_position and '4' in to_position:
-                    self.vm.en_passant_black = active_piece
-                if active_piece.hasName('pawn') and '7' in at_position and '5' in to_position:
-                    self.vm.en_passant_white = active_piece
-                self.moveAtPositionToPositionAndCapture(at_position, to_position)
-                return True
-        return False
+    def validateMoveAndMovePiece(self, at_position, to_position):
+        if self.validateMove(self.color, at_position, to_position):
+            active_piece = self.gb.getPieceAtPosition(at_position)
+            if active_piece.hasName('pawn') and '2' in at_position and '4' in to_position:
+                self.vm.en_passant_black = active_piece
+            if active_piece.hasName('pawn') and '7' in at_position and '5' in to_position:
+                self.vm.en_passant_white = active_piece
+            self.moveAtPositionToPositionAndCapture(at_position, to_position)
+            return True
+        else:
+            return False
 
     def quitProgram(self, msg):
         if msg == 'q' or msg == 'quit':
@@ -125,10 +125,10 @@ class Program:
                 msg = msg[0]
                 if self.quitProgram(msg):
                     break
-                change_player_color = self.specialRuleMessage(msg)
+                change_player_color = self.validateSpecialRuleAndMovePiece(msg)
             elif len(msg) == 2:
                 at_position, to_position = msg
-                change_player_color = self.moveMessage(at_position, to_position)
+                change_player_color = self.validateMoveAndMovePiece(at_position, to_position)
             if change_player_color:
                 if self.color == 'white':
                     self.vm.en_passant_white = None
