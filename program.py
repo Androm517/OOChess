@@ -74,6 +74,11 @@ class Program:
                 return True
         elif msg == 'long castle':
             if self.vm.validateLongCastle(self.color, self.gb):
+                move_rook = ['a1', 'd1'] if self.color == 'white' else ['a8', 'd8']
+                move_king = ['e1', 'c1'] if self.color == 'white' else ['e8', 'c8']
+                self.moveAtPositionToPositionAndCapture(move_rook[0], move_rook[1])
+                self.moveAtPositionToPositionAndCapture(move_king[0], move_king[1])
+                self.vm.setLongCastleFlagToFalse(self.color)
                 return True
         elif 'en passant' in msg:
             msg = msg.split()
