@@ -90,9 +90,11 @@ class Program:
         return False
 
     def moveMessage(self, at_position, to_position):
-        if self.validateMove(self.color, at_position, to_position):
-            self.moveAtPositionToPositionAndCapture(at_position, to_position)
-            return True
+        piece_at_position = self.gb.getPieceAtPosition(at_position)
+        if piece_at_position is not None:
+            if self.validateMove(self.color, at_position, to_position):
+                self.moveAtPositionToPositionAndCapture(at_position, to_position)
+                return True
         return False
 
     def quitProgram(self, msg):
