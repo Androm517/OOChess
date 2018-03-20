@@ -38,18 +38,5 @@ class Piece:
             return name
         return False
 
-    def __eq__(self, other):
-        """Two pieces are equal if they belong to the same team and stand at the same position"""
-        if self.color == other.color and self.position == other.position:
-            return True
-        else:
-            return False
-
-    def __ne__(self, other):
-        if self == other:
-            return False
-        else:
-            return True
-
     def __str__(self):
         return str(self.position) + ' ' + self.color + ' ' + self.name
