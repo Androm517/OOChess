@@ -40,8 +40,8 @@ class Validate:
         if active_piece.hasColor('black'):
             one_step = one_step.invert()
             two_step = two_step.invert()
-            capture_left = capture_right.invert()
-            capture_right = capture_left.invert()
+            capture_left = capture_left.invert()
+            capture_right = capture_right.invert()
         if (step == capture_left or step == capture_right) and passive_piece is not None:
             return True
         elif step == one_step and passive_piece is None:
