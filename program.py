@@ -63,7 +63,7 @@ class Program:
         self.gb.viewBoard()
         print()
 
-    def validateSpecialRuleAndMovePiece(self, msg):
+    def validateSpecialRuleCommandAndMovePiece(self, msg):
         if msg == 'short castle':
             if self.vm.validateShortCastle(self.color, self.gb):
                 castle_king = self.gb.getWhiteKing() if self.color == 'white' else self.gb.getBlackKing()
@@ -106,8 +106,8 @@ class Program:
         else:
             return False
 
-    def quitProgram(self, msg):
-        if msg == 'q' or msg == 'quit':
+    def quitProgram(self, quit_command):
+        if quit_command == 'q' or quit_command == 'quit':
             print(f'white_pieces: {    self.convertListToStr(self.white_pieces)}')
             print(f'black_pieces: {    self.convertListToStr(self.black_pieces)}')
             print(f'captured_pieces: { self.convertListToStr(self.captured_pieces)}')
@@ -122,10 +122,10 @@ class Program:
             change_player_color = False
             msg = self.ui.getMsg()
             if len(msg) == 1:
-                msg = msg[0]
-                if self.quitProgram(msg):
+                command = msg[0]
+                if self.quitProgram(command):
                     break
-                change_player_color = self.validateSpecialRuleAndMovePiece(msg)
+                change_player_color = self.validateSpecialRuleCommandAndMovePiece(command)
             elif len(msg) == 2:
                 at_position, to_position = msg
                 change_player_color = self.validateMoveAndMovePiece(at_position, to_position)
