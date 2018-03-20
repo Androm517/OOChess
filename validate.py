@@ -95,7 +95,7 @@ class Validate:
         else:
             self.long_castle_black = False
 
-    def validateEnPassant(self, color, gameboard):
+    def validateEnPassant(self, active_piece, color, gameboard):
         en_passant = self.en_passant_white if color == 'white' else self.en_passant_black
         return en_passant[0]
 

@@ -73,8 +73,10 @@ class Program:
             if self.vm.validateLongCastle(self.color, self.gb):
                 print(f'{self.color}, can long castle')
                 return True
-        elif msg == 'en passant':
-            if self.vm.validateEnPassant(self.color, self.gb):
+        elif 'en passant' in msg:
+            msg = msg.split()
+            active_piece = self.gb.getPieceAtPosition(msg[2])
+            if self.vm.validateEnPassant(active_piece, self.color, self.gb):
                 print(f'{self.color}, can en passant')
                 return True
         return False
