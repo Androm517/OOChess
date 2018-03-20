@@ -66,15 +66,15 @@ class Program:
     def specialRuleMessage(self, msg):
         msg = msg[0]
         if msg == 'short castle':
-            if self.vm.validateShortCastle(self.color):
+            if self.vm.validateShortCastle(self.color, self.gb):
                 print(f'{self.color}, can short castle')
                 return True
         elif msg == 'long castle':
-            if self.vm.validateLongCastle(self.color):
+            if self.vm.validateLongCastle(self.color, self.gb):
                 print(f'{self.color}, can long castle')
                 return True
         elif msg == 'en passant':
-            if self.vm.validateEnPassant(self.color):
+            if self.vm.validateEnPassant(self.color, self.gb):
                 print(f'{self.color}, can en passant')
                 return True
         return False

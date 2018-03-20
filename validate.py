@@ -73,12 +73,12 @@ class Validate:
         else:
             return False
 
-    def validateShortCastle(self, color):
+    def validateShortCastle(self, color, gameboard):
         short_castle = self.short_castle_white if color == 'white' else self.short_castle_black
         self.setShortCastleFlagToFalse(color)
         return short_castle
 
-    def validateLongCastle(self, color):
+    def validateLongCastle(self, color, gameboard):
         long_castle = self.long_castle_white if color == 'white' else self.long_castle_black
         self.setLongCastleFlagToFalse(color)
         return long_castle
@@ -95,7 +95,7 @@ class Validate:
         else:
             self.long_castle_black = False
 
-    def validateEnPassant(self, color):
+    def validateEnPassant(self, color, gameboard):
         en_passant = self.en_passant_white if color == 'white' else self.en_passant_black
         return en_passant[0]
 
