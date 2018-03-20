@@ -40,7 +40,14 @@ class Validate:
 
     def validateRook(self, active_piece, at_position, to_position, unit_direction, gameboard):
         if unit_direction.columnLength() == 0 or unit_direction.rowLength() == 0:
-            return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
+            if self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard):
+                if active_piece.isAtPosition('a1') or active_piece.isAtPosition('a8'):
+                    self.setLongCastleFlagToFalse(active_piece.color)
+                else:
+                    self.setShortCastleFlagToFalse(active_piece.color)
+                return True
+            else:
+                return False
         else:
             return False
 
@@ -69,7 +76,12 @@ class Validate:
     def validateKing(self, active_piece, at_position, to_position, unit_direction, gameboard):
         difference = at_position.subtract(to_position)
         if difference.length() == 1:
-            return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
+            if self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard):
+                self.setShortCastleFlagToFalse(active_piece.color)
+                self.setLongCastleFlagToFalse(active_piece.color)
+                return True
+            else:
+                return False
         else:
             return False
 

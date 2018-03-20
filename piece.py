@@ -22,6 +22,12 @@ class Piece:
     def getPieceName(self):
         return self.name
 
+    def isAtPosition(self, board_position):
+        if self.getPosition() == board_position:
+            return True
+        else:
+            return False
+
     def hasColor(self, color):
         if self.color == color:
             return True
