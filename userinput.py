@@ -9,7 +9,7 @@ class UserInput:
             msg = input(">>> ")
             if msg in self.keywords:
                 if msg == 'en passant':
-                    en_passant_square = input("Which square do you attack from: ")
+                    print('which square do you attack from')
                     en_passant_square = self.getSquare()
                     return [msg + ' ' + en_passant_square]
                 return [msg]
