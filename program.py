@@ -9,6 +9,7 @@ class Program:
         self.ui = userinput.UserInput()
         self.gb = gameboard.Gameboard()
         self.vm = validate.Validate()
+        self.color = 'white'
 
         self.captured_pieces = []
         self.white_pieces = []
@@ -30,7 +31,6 @@ class Program:
         self.black_pieces.append(piece.Piece('d8', name='queen', color='black', name_representation='\u265B'))
         self.white_pieces.append(piece.Piece('e1', name='king', color='white', name_representation='\u2654'))
         self.black_pieces.append(piece.Piece('e8', name='king', color='black', name_representation='\u265A'))
-
 
     def capture(self, to_position):
         passive_piece = self.gb.getPieceAtPosition(to_position)
@@ -58,28 +58,42 @@ class Program:
         else:
             return False
 
-
     def updateAndViewBoard(self):
         self.gb.updateBoardState(self.white_pieces + self.black_pieces)
         self.gb.viewBoard()
         print()
 
+    def specialRule(self, msg):
+        pass
+
+    def moveMessage(self, msg):
+        at_position, to_position = msg
+        if self.validateMove(self.color, at_position, to_position):
+            self.moveAtPositionToPositionAndCapture(at_position, to_position)
+            self.color = 'black' if self.color == 'white' else 'white'
+
+    def quitProgram(self, msg):
+        msg = msg[0]
+        if msg == 'q' or msg == 'quit':
+            print(f'white_pieces: {    self.convertListToStr(self.white_pieces)}')
+            print(f'black_pieces: {    self.convertListToStr(self.black_pieces)}')
+            print(f'captured_pieces: { self.convertListToStr(self.captured_pieces)}')
+            print('Hejdå')
+            return True
+        else:
+            return False
 
     def run(self):
         self.updateAndViewBoard()
         color = 'white'
         while True:
             msg = self.ui.getMsg()
-            if msg == 'q':
-                print(f'white_pieces: {    self.convertListToStr(self.white_pieces)}')
-                print(f'black_pieces: {    self.convertListToStr(self.black_pieces)}')
-                print(f'captured_pieces: { self.convertListToStr(self.captured_pieces)}')
-                print('Hejdå')
-                break
-            at_position, to_position = msg
-            if self.validateMove(color, at_position, to_position):
-                self.moveAtPositionToPositionAndCapture(at_position, to_position)
-                color = 'black' if color == 'white' else 'white'
+            if len(msg) == 1:
+                if self.quitProgram(msg):
+                    break
+                self.specialRule(msg)
+            elif len(msg) == 2:
+                self.moveMessage(msg)
             self.updateAndViewBoard()
     
     def convertListToStr(self, item_list):
