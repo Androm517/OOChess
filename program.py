@@ -63,7 +63,7 @@ class Program:
         self.gb.viewBoard()
         print()
 
-    def specialRule(self, msg):
+    def specialRuleMessage(self, msg):
         msg = msg[0]
         if msg == 'short castle':
             if self.vm.validateShortCastle(self.color):
@@ -75,6 +75,7 @@ class Program:
                 return True
         elif msg == 'en passant':
             if self.vm.validateEnPassant(self.color):
+                print(f'{self.color}, can en passant')
                 return True
         return False
 
@@ -104,10 +105,14 @@ class Program:
             if len(msg) == 1:
                 if self.quitProgram(msg):
                     break
-                change_player_color = self.specialRule(msg)
+                change_player_color = self.specialRuleMessage(msg)
             elif len(msg) == 2:
                 change_player_color = self.moveMessage(msg)
             if change_player_color:
+                if self.color == 'white':
+                    self.vm.en_passant_white[0] = False
+                else:
+                    self.vm.en_passant_black[0] = False
                 self.color = 'black' if self.color == 'white' else 'white'
             self.updateAndViewBoard()
     

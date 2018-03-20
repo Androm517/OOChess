@@ -7,6 +7,8 @@ class Validate:
         self.short_castle_black = True
         self.long_castle_white = True
         self.long_castle_black = True
+        self.en_passant_white = [False, 'capture position', 'delete pawn position']
+        self.en_passant_black = [False, 'capture position', 'delete pawn position']
 
     def validatePawn(self, active_piece, at_position, to_position, unit_direction, gameboard):
         step = to_position.subtract(at_position)
@@ -24,7 +26,14 @@ class Validate:
         elif step == one_step and passive_piece is None:
             return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
         elif active_piece.start_position and step == two_step and passive_piece is None:
-            return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
+            if self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard):
+                capture_position = at_position.add(one_step)
+                delete_pawn_position = at_position.add(two_step)
+                if active_piece.hasColor('white'):
+                    self.en_passant_black = [True, str(capture_position), str(delete_pawn_position)]
+                else:
+                    self.en_passant_white = [True, str(capture_position), str(delete_pawn_position)]
+                return True
         else:
             return False
 
@@ -66,22 +75,29 @@ class Validate:
 
     def validateShortCastle(self, color):
         short_castle = self.short_castle_white if color == 'white' else self.short_castle_black
-        if color == 'white':
-            self.short_castle_white = False
-        else:
-            self.short_castle_black = False
+        self.setShortCastleFlagToFalse(color)
         return short_castle
 
     def validateLongCastle(self, color):
         long_castle = self.long_castle_white if color == 'white' else self.long_castle_black
+        self.setLongCastleFlagToFalse(color)
+        return long_castle
+
+    def setShortCastleFlagToFalse(self, color):
+        if color == 'white':
+            self.short_castle_white = False
+        else:
+            self.short_castle_black = False
+
+    def setLongCastleFlagToFalse(self, color):
         if color == 'white':
             self.long_castle_white = False
         else:
             self.long_castle_black = False
-        return long_castle
 
     def validateEnPassant(self, color):
-        pass
+        en_passant = self.en_passant_white if color == 'white' else self.en_passant_black
+        return en_passant[0]
 
     def isKingInCheck(self, active_piece, gameboard):
         king = gameboard.getWhiteKing() if active_piece.hasColor('white') else gameboard.getBlackKing()
