@@ -67,19 +67,23 @@ class Program:
         msg = msg[0]
         if msg == 'short castle':
             if self.vm.validateShortCastle(self.color):
-                pass
+                print(f'{self.color}, can short castle')
+                return True
         elif msg == 'long castle':
             if self.vm.validateLongCastle(self.color):
-                pass
+                print(f'{self.color}, can long castle')
+                return True
         elif msg == 'en passant':
             if self.vm.validateEnPassant(self.color):
-                pass
+                return True
+        return False
 
     def moveMessage(self, msg):
         at_position, to_position = msg
         if self.validateMove(self.color, at_position, to_position):
             self.moveAtPositionToPositionAndCapture(at_position, to_position)
-            self.color = 'black' if self.color == 'white' else 'white'
+            return True
+        return False
 
     def quitProgram(self, msg):
         msg = msg[0]
@@ -94,15 +98,17 @@ class Program:
 
     def run(self):
         self.updateAndViewBoard()
-        color = 'white'
         while True:
+            change_player_color = False
             msg = self.ui.getMsg()
             if len(msg) == 1:
                 if self.quitProgram(msg):
                     break
-                self.specialRule(msg)
+                change_player_color = self.specialRule(msg)
             elif len(msg) == 2:
-                self.moveMessage(msg)
+                change_player_color = self.moveMessage(msg)
+            if change_player_color:
+                self.color = 'black' if self.color == 'white' else 'white'
             self.updateAndViewBoard()
     
     def convertListToStr(self, item_list):

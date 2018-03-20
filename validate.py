@@ -2,6 +2,12 @@ import position
 
 
 class Validate:
+    def __init__(self):
+        self.short_castle_white = True
+        self.short_castle_black = True
+        self.long_castle_white = True
+        self.long_castle_black = True
+
     def validatePawn(self, active_piece, at_position, to_position, unit_direction, gameboard):
         step = to_position.subtract(at_position)
         one_step, two_step, capture = self.convertStrPositionToObjPosition('a2', 'a3', 'b2')
@@ -59,10 +65,20 @@ class Validate:
             return False
 
     def validateShortCastle(self, color):
-        pass
+        short_castle = self.short_castle_white if color == 'white' else self.short_castle_black
+        if color == 'white':
+            self.short_castle_white = False
+        else:
+            self.short_castle_black = False
+        return short_castle
 
     def validateLongCastle(self, color):
-        pass
+        long_castle = self.long_castle_white if color == 'white' else self.long_castle_black
+        if color == 'white':
+            self.long_castle_white = False
+        else:
+            self.long_castle_black = False
+        return long_castle
 
     def validateEnPassant(self, color):
         pass
