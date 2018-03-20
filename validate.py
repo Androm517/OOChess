@@ -95,11 +95,11 @@ class Validate:
 
     def isShortCastleRookAndKingAtStartPosition(self, rook, king):
         if not rook.start_position:
-            self.setShortCastleFlagToFalse(rook.color)
+            self.setShortCastleFlagToFalse(rook)
             return False
         if not king.start_position:
-            self.setShortCastleFlagToFalse(king.color)
-            self.setLongCastleFlagToFalse(king.color)
+            self.setShortCastleFlagToFalse(king)
+            self.setLongCastleFlagToFalse(king)
             return False
         return True
 
@@ -125,11 +125,11 @@ class Validate:
 
     def isLongCastleRookAndKingAtStartPosition(self, rook, king):
         if not rook.start_position:
-            self.setLongCastleFlagToFalse(rook.color)
+            self.setLongCastleFlagToFalse(rook)
             return False
         if not king.start_position:
-            self.setShortCastleFlagToFalse(king.color)
-            self.setLongCastleFlagToFalse(king.color)
+            self.setShortCastleFlagToFalse(king)
+            self.setLongCastleFlagToFalse(king)
             return False
         return True
 
@@ -140,14 +140,14 @@ class Validate:
                     return True
         return False
 
-    def setShortCastleFlagToFalse(self, color):
-        if color == 'white':
+    def setShortCastleFlagToFalse(self, piece):
+        if piece.hasColor('white'):
             self.short_castle_white = False
         else:
             self.short_castle_black = False
 
-    def setLongCastleFlagToFalse(self, color):
-        if color == 'white':
+    def setLongCastleFlagToFalse(self, piece):
+        if piece.hasColor('white'):
             self.long_castle_white = False
         else:
             self.long_castle_black = False

@@ -66,19 +66,21 @@ class Program:
     def specialRuleMessage(self, msg):
         if msg == 'short castle':
             if self.vm.validateShortCastle(self.color, self.gb):
-                move_rook = ['h1', 'f1'] if self.color == 'white' else ['h8', 'f8']
-                move_king = ['e1', 'g1'] if self.color == 'white' else ['e8', 'g8']
+                castle_king = self.gb.getWhiteKing() if self.color == 'white' else self.gb.getBlackKing()
+                move_rook = ['h1', 'f1'] if castle_king.hasColor('white') else ['h8', 'f8']
+                move_king = ['e1', 'g1'] if castle_king.hasColor('white') else ['e8', 'g8']
                 self.moveAtPositionToPositionAndCapture(move_rook[0], move_rook[1])
                 self.moveAtPositionToPositionAndCapture(move_king[0], move_king[1])
-                self.vm.setShortCastleFlagToFalse(self.color)
+                self.vm.setShortCastleFlagToFalse(castle_king)
                 return True
         elif msg == 'long castle':
             if self.vm.validateLongCastle(self.color, self.gb):
-                move_rook = ['a1', 'd1'] if self.color == 'white' else ['a8', 'd8']
-                move_king = ['e1', 'c1'] if self.color == 'white' else ['e8', 'c8']
+                castle_king = self.gb.getWhiteKing() if self.color == 'white' else self.gb.getBlackKing()
+                move_rook = ['a1', 'd1'] if castle_king.hasColor('white') else ['a8', 'd8']
+                move_king = ['e1', 'c1'] if castle_king.hasColor('white') else ['e8', 'c8']
                 self.moveAtPositionToPositionAndCapture(move_rook[0], move_rook[1])
                 self.moveAtPositionToPositionAndCapture(move_king[0], move_king[1])
-                self.vm.setLongCastleFlagToFalse(self.color)
+                self.vm.setLongCastleFlagToFalse(castle_king)
                 return True
         elif 'en passant' in msg:
             msg = msg.split()
