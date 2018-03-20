@@ -10,6 +10,27 @@ class Validate:
         self.en_passant_white = [False, 'capture position', 'delete pawn position']
         self.en_passant_black = [False, 'capture position', 'delete pawn position']
 
+    def validateMove(self, active_piece, at_position, to_position, gameboard):
+        if self.validatePieceMove(active_piece, at_position, to_position, gameboard):
+            passive_piece = self.temporarelyMoveActivePiece(active_piece, at_position, to_position, gameboard)
+            king_is_in_check = self.isKingInCheck(active_piece, gameboard)
+            self.moveActivePiceBack(active_piece, passive_piece, at_position, to_position, gameboard)
+            if not king_is_in_check:
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def validatePieceMove(self, active_piece, at_position, to_position, gameboard):
+        validate_functions = {'pawn': self.validatePawn, 'rook': self.validateRook, 'knight': self.validateKnight,
+                              'bishop': self.validateBishop, 'queen': self.validateQueen, 'king': self.validateKing}
+        at_position, to_position = self.convertStrPositionToObjPosition(at_position, to_position)
+        unit_direction = at_position.subtract(to_position).unit()
+        validate_function = validate_functions[active_piece.getPieceName()]
+        valid_move = validate_function(active_piece, at_position, to_position, unit_direction, gameboard)
+        return valid_move
+
     def validatePawn(self, active_piece, at_position, to_position, unit_direction, gameboard):
         step = to_position.subtract(at_position)
         one_step, two_step, capture = self.convertStrPositionToObjPosition('a2', 'a3', 'b2')
@@ -36,7 +57,6 @@ class Validate:
                 return True
         else:
             return False
-
 
     def validateRook(self, active_piece, at_position, to_position, unit_direction, gameboard):
         if unit_direction.columnLength() == 0 or unit_direction.rowLength() == 0:
@@ -164,27 +184,6 @@ class Validate:
                 return True
         return False
 
-    def validatePieceMove(self, active_piece, at_position, to_position, gameboard):
-        validate_functions = {'pawn': self.validatePawn, 'rook': self.validateRook, 'knight': self.validateKnight,
-                              'bishop': self.validateBishop, 'queen': self.validateQueen, 'king': self.validateKing}
-        at_position, to_position = self.convertStrPositionToObjPosition(at_position, to_position)
-        unit_direction = at_position.subtract(to_position).unit()
-        validate_function = validate_functions[active_piece.getPieceName()]
-        valid_move = validate_function(active_piece, at_position, to_position, unit_direction, gameboard)
-        return valid_move
-
-    def validateMove(self, active_piece, at_position, to_position, gameboard):
-        if self.validatePieceMove(active_piece, at_position, to_position, gameboard):
-            passive_piece = self.temporarelyMoveActivePiece(active_piece, at_position, to_position, gameboard)
-            king_is_in_check = self.isKingInCheck(active_piece, gameboard)
-            self.moveActivePiceBack(active_piece, passive_piece, at_position, to_position, gameboard)
-            if not king_is_in_check:
-                return True
-            else:
-                return False
-        else:
-            return False
-
     def moveActivePiceBack(self, active_piece, passive_piece, at_position, to_position, gameboard):
         if passive_piece is None:
             del gameboard.board_state[to_position]
@@ -211,4 +210,3 @@ class Validate:
         if passive_piece is not None:
             return False
         return self.checkSquaresForBlockingPiecesRecursive(at_position, check_position.add(unit_direction), unit_direction, gameboard)
-
