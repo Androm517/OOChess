@@ -7,8 +7,8 @@ class Validate:
         self.short_castle_black = True
         self.long_castle_white = True
         self.long_castle_black = True
-        self.en_passant_white = [False, 'capture position', 'delete pawn position']
-        self.en_passant_black = [False, 'capture position', 'delete pawn position']
+        self.en_passant_white = None
+        self.en_passant_black = None
 
     def validateMove(self, active_piece, at_position, to_position, gameboard):
         if self.validatePieceMove(active_piece, at_position, to_position, gameboard):
@@ -163,9 +163,13 @@ class Validate:
         else:
             self.long_castle_black = False
 
-    def validateEnPassant(self, active_piece, color, gameboard):
-        en_passant = self.en_passant_white if color == 'white' else self.en_passant_black
-        return en_passant[0]
+    def validateEnPassant(self, active_piece):
+        en_passant = self.en_passant_white if active_piece.hasColor('white') else self.en_passant_black
+        active_position, passive_position = self.convertStrPositionToObjPosition(active_piece.getPosition(), en_passant.getPosition())
+        difference = active_position.subtract(passive_position)
+        if difference.rowLength() == 0 and difference.columnLength() == 1:
+            return True
+        return False
 
     def isKingInCheck(self, active_piece, gameboard):
         king = gameboard.getWhiteKing() if active_piece.hasColor('white') else gameboard.getBlackKing()

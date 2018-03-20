@@ -85,14 +85,23 @@ class Program:
         elif 'en passant' in msg:
             msg = msg.split()
             active_piece = self.gb.getPieceAtPosition(msg[2])
-            if self.vm.validateEnPassant(active_piece, self.color, self.gb):
+            if self.vm.validateEnPassant(active_piece):
+                passive_piece = self.vm.en_passant_white if active_piece.hasColor('white') else self.vm.en_passant_black
+                target_row = '6' if active_piece.hasColor('white') else '3'
+                target = passive_piece.getPosition()[0] + target_row
+                self.moveAtPositionToPositionAndCapture(active_piece.getPosition(), target)
+                self.capture(passive_piece.getPosition())
                 return True
         return False
 
     def moveMessage(self, at_position, to_position):
-        piece_at_position = self.gb.getPieceAtPosition(at_position)
-        if piece_at_position is not None:
+        active_piece = self.gb.getPieceAtPosition(at_position)
+        if active_piece is not None:
             if self.validateMove(self.color, at_position, to_position):
+                if active_piece.hasName('pawn') and '2' in at_position and '4' in to_position:
+                    self.vm.en_passant_black = active_piece
+                if active_piece.hasName('pawn') and '7' in at_position and '5' in to_position:
+                    self.vm.en_passant_white = active_piece
                 self.moveAtPositionToPositionAndCapture(at_position, to_position)
                 return True
         return False
@@ -122,9 +131,9 @@ class Program:
                 change_player_color = self.moveMessage(at_position, to_position)
             if change_player_color:
                 if self.color == 'white':
-                    self.vm.en_passant_white[0] = False
+                    self.vm.en_passant_white = None
                 else:
-                    self.vm.en_passant_black[0] = False
+                    self.vm.en_passant_black = None
                 self.color = 'black' if self.color == 'white' else 'white'
             self.updateAndViewBoard()
     
