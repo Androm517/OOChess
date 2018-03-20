@@ -11,7 +11,7 @@ class UserInput:
                 if msg == 'en passant':
                     en_passant_square = input("Which square do you attack from: ")
                     return [msg + ' ' + en_passant_square]
-                return msg
+                return [msg]
             msg = msg.split()
             if len(msg) == 2:
                 return msg

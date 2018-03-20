@@ -40,14 +40,7 @@ class Validate:
 
     def validateRook(self, active_piece, at_position, to_position, unit_direction, gameboard):
         if unit_direction.columnLength() == 0 or unit_direction.rowLength() == 0:
-            if self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard):
-                if active_piece.isAtPosition('a1') or active_piece.isAtPosition('a8'):
-                    self.setLongCastleFlagToFalse(active_piece.color)
-                else:
-                    self.setShortCastleFlagToFalse(active_piece.color)
-                return True
-            else:
-                return False
+            return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
         else:
             return False
 
@@ -76,24 +69,76 @@ class Validate:
     def validateKing(self, active_piece, at_position, to_position, unit_direction, gameboard):
         difference = at_position.subtract(to_position)
         if difference.length() == 1:
-            if self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard):
-                self.setShortCastleFlagToFalse(active_piece.color)
-                self.setLongCastleFlagToFalse(active_piece.color)
+            return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
+        else:
+            return False
+
+    def validateShortCastle(self, color, gameboard):
+        short_castle = self.short_castle_white if color == 'white' else self.short_castle_black
+        if short_castle:
+            castle_rook = gameboard.getPieceAtPosition('h1') if color == 'white' else gameboard.getPieceAtPosition('h8')
+            castle_king = gameboard.getWhiteKing() if color == 'white' else gameboard.getBlackKing()
+            if not self.isShortCastleRookAndKingAtStartPosition(castle_rook, castle_king):
+                return False
+            unit_direction = position.Position('a1')
+            unit_direction.coordinates = (1, 0)
+            if self.validatePieceMove(castle_rook, castle_rook.getPosition(), castle_king.getPosition(), gameboard):
+                pieces = gameboard.getAllBlackPieces() if color == 'white' else gameboard.getAllWhitePieces()
+                squares = ['e1', 'f1', 'g1', 'h1'] if color == 'white' else ['e8', 'f8', 'g8', 'h8']
+                if self.isSquaresAttacked(pieces, squares, gameboard):
+                    return False
                 return True
             else:
                 return False
         else:
             return False
 
-    def validateShortCastle(self, color, gameboard):
-        short_castle = self.short_castle_white if color == 'white' else self.short_castle_black
-        self.setShortCastleFlagToFalse(color)
-        return short_castle
+    def isShortCastleRookAndKingAtStartPosition(self, rook, king):
+        if not rook.start_position:
+            self.setShortCastleFlagToFalse(rook.color)
+            return False
+        if not king.start_position:
+            self.setShortCastleFlagToFalse(king.color)
+            self.setLongCastleFlagToFalse(king.color)
+            return False
+        return True
 
     def validateLongCastle(self, color, gameboard):
         long_castle = self.long_castle_white if color == 'white' else self.long_castle_black
-        self.setLongCastleFlagToFalse(color)
-        return long_castle
+        if long_castle:
+            castle_rook = gameboard.getPieceAtPosition('a1') if color == 'white' else gameboard.getPieceAtPosition('a8')
+            castle_king = gameboard.getWhiteKing() if color == 'white' else gameboard.getBlackKing()
+            if not self.isLongCastleRookAndKingAtStartPosition(castle_rook, castle_king):
+                return False
+            unit_direction = position.Position('a1')
+            unit_direction.coordinates = (-1, 0)
+            if self.validatePieceMove(castle_rook, castle_rook.getPosition(), castle_king.getPosition(), gameboard):
+                pieces = gameboard.getAllBlackPieces() if color == 'white' else gameboard.getAllWhitePieces()
+                squares = ['a1', 'b1', 'c1', 'd1', 'e1'] if color == 'white' else ['a8', 'b8', 'c8', 'd8', 'e8']
+                if self.isSquaresAttacked(pieces, squares, gameboard):
+                    return False
+                return True
+            else:
+                return False
+        else:
+            return False
+
+    def isLongCastleRookAndKingAtStartPosition(self, rook, king):
+        if not rook.start_position:
+            self.setLongCastleFlagToFalse(rook.color)
+            return False
+        if not king.start_position:
+            self.setShortCastleFlagToFalse(king.color)
+            self.setLongCastleFlagToFalse(king.color)
+            return False
+        return True
+
+    def isSquaresAttacked(self, pieces, squares, gameboard):
+        for square in squares:
+            for piece in pieces:
+                if self.validatePieceMove(piece, piece.getPosition(), square, gameboard):
+                    return True
+        return False
 
     def setShortCastleFlagToFalse(self, color):
         if color == 'white':
@@ -115,8 +160,7 @@ class Validate:
         king = gameboard.getWhiteKing() if active_piece.hasColor('white') else gameboard.getBlackKing()
         pieces = gameboard.getAllBlackPieces() if active_piece.hasColor('white') else gameboard.getAllWhitePieces()
         for piece in pieces:
-            tmp = self.validatePieceMove(piece, piece.getPosition(), king.getPosition(), gameboard)
-            if tmp:
+            if self.validatePieceMove(piece, piece.getPosition(), king.getPosition(), gameboard):
                 return True
         return False
 

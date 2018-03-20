@@ -39,6 +39,7 @@ class Position:
     def unit(self):
         col, row = self.coordinates
         tmp = Position('a1')
+        tmp.coordinates = (13, 17)
         if self.rowLength() == self.columnLength():
             tmp.coordinates = (int(col / abs(col)), int(row / abs(row)))
         elif col == 0:

@@ -64,32 +64,31 @@ class Program:
         print()
 
     def specialRuleMessage(self, msg):
-        msg = msg[0]
         if msg == 'short castle':
             if self.vm.validateShortCastle(self.color, self.gb):
-                print(f'{self.color}, can short castle')
+                move_rook = ['h1', 'f1'] if self.color == 'white' else ['h8', 'f8']
+                move_king = ['e1', 'g1'] if self.color == 'white' else ['e8', 'g8']
+                self.moveAtPositionToPositionAndCapture(move_rook[0], move_rook[1])
+                self.moveAtPositionToPositionAndCapture(move_king[0], move_king[1])
+                self.vm.setShortCastleFlagToFalse(self.color)
                 return True
         elif msg == 'long castle':
             if self.vm.validateLongCastle(self.color, self.gb):
-                print(f'{self.color}, can long castle')
                 return True
         elif 'en passant' in msg:
             msg = msg.split()
             active_piece = self.gb.getPieceAtPosition(msg[2])
             if self.vm.validateEnPassant(active_piece, self.color, self.gb):
-                print(f'{self.color}, can en passant')
                 return True
         return False
 
-    def moveMessage(self, msg):
-        at_position, to_position = msg
+    def moveMessage(self, at_position, to_position):
         if self.validateMove(self.color, at_position, to_position):
             self.moveAtPositionToPositionAndCapture(at_position, to_position)
             return True
         return False
 
     def quitProgram(self, msg):
-        msg = msg[0]
         if msg == 'q' or msg == 'quit':
             print(f'white_pieces: {    self.convertListToStr(self.white_pieces)}')
             print(f'black_pieces: {    self.convertListToStr(self.black_pieces)}')
@@ -105,11 +104,13 @@ class Program:
             change_player_color = False
             msg = self.ui.getMsg()
             if len(msg) == 1:
+                msg = msg[0]
                 if self.quitProgram(msg):
                     break
                 change_player_color = self.specialRuleMessage(msg)
             elif len(msg) == 2:
-                change_player_color = self.moveMessage(msg)
+                at_position, to_position = msg
+                change_player_color = self.moveMessage(at_position, to_position)
             if change_player_color:
                 if self.color == 'white':
                     self.vm.en_passant_white[0] = False
