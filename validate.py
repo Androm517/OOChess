@@ -58,6 +58,15 @@ class Validate:
         else:
             return False
 
+    def validateShortCastle(self, color):
+        pass
+
+    def validateLongCastle(self, color):
+        pass
+
+    def validateEnPassant(self, color):
+        pass
+
     def isKingInCheck(self, active_piece, gameboard):
         king = gameboard.getWhiteKing() if active_piece.hasColor('white') else gameboard.getBlackKing()
         pieces = gameboard.getAllBlackPieces() if active_piece.hasColor('white') else gameboard.getAllWhitePieces()

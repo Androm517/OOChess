@@ -64,7 +64,16 @@ class Program:
         print()
 
     def specialRule(self, msg):
-        pass
+        msg = msg[0]
+        if msg == 'short castle':
+            if self.vm.validateShortCastle(self.color):
+                pass
+        elif msg == 'long castle':
+            if self.vm.validateLongCastle(self.color):
+                pass
+        elif msg == 'en passant':
+            if self.vm.validateEnPassant(self.color):
+                pass
 
     def moveMessage(self, msg):
         at_position, to_position = msg
