@@ -47,16 +47,7 @@ class Validate:
         elif step == one_step and passive_piece is None:
             return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
         elif active_piece.start_position and step == two_step and passive_piece is None:
-            if self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard):
-                capture_position = at_position.add(one_step)
-                delete_pawn_position = at_position.add(two_step)
-                if active_piece.hasColor('white'):
-                    self.en_passant_black = [True, str(capture_position), str(delete_pawn_position)]
-                else:
-                    self.en_passant_white = [True, str(capture_position), str(delete_pawn_position)]
-                return True
-        else:
-            return False
+            return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
 
     def validateRook(self, active_piece, at_position, to_position, unit_direction, gameboard):
         if unit_direction.columnLength() == 0 or unit_direction.rowLength() == 0:
