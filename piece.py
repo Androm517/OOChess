@@ -35,7 +35,7 @@ class Piece:
 
     def hasName(self, name):
         if self.name == name:
-            return name
+            return True
         return False
 
     def __str__(self):
