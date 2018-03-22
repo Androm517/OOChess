@@ -44,11 +44,16 @@ class Validate:
         return True
 
     def validatePieceMove(self, active_piece, at_position, to_position, gameboard):
+        target_position = gameboard.getPieceAtPosition(to_position)
+        if target_position is not None:
+            if target_position.hasColor(active_piece.color):
+                return False
         validate_functions = {'pawn': self.validatePawn, 'rook': self.validateRook, 'knight': self.validateKnight,
                               'bishop': self.validateBishop, 'queen': self.validateQueen, 'king': self.validateKing}
         at_position, to_position = self.convertStrPositionToObjPosition(at_position, to_position)
         unit_direction = at_position.subtract(to_position).unit()
         validate_function = validate_functions[active_piece.getPieceName()]
+
         return validate_function(active_piece, at_position, to_position, unit_direction, gameboard)
 
     def validatePawn(self, active_piece, at_position, to_position, unit_direction, gameboard):
@@ -191,12 +196,12 @@ class Validate:
         return False
 
     def isKingInCheck(self, active_piece, gameboard):
-        king = gameboard.getWhiteKing() if active_piece.hasColor('white') else gameboard.getBlackKing()
-        color = 'white' if active_piece.hasColor('white') else 'black'
+        king = gameboard.getBlackKing() if active_piece.hasColor('black') else gameboard.getWhiteKing()
+        color = 'white' if active_piece.hasColor('black') else 'black'
         return self.isSquareAttackedByColor(king.getPosition(), color, gameboard)
 
     def isSquareAttackedByColor(self, square, color, gameboard):
-        pieces = gameboard.getAllBlackPieces() if color == 'white' else gameboard.getAllWhitePieces()
+        pieces = gameboard.getAllWhitePieces() if color == 'white' else gameboard.getAllBlackPieces()
         for piece in pieces:
             if self.validatePieceMove(piece, piece.getPosition(), square, gameboard):
                 return True

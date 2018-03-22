@@ -120,6 +120,14 @@ class Program:
         self.updateAndViewBoard()
         while True:
             change_player_color = False
+            if self.color == 'white':
+                if self.vm.isWhiteCheckMate(self.gb):
+                    print('White is check mate!!!')
+                    break
+            else:
+                if self.vm.isBlackCheckmate(self.gb):
+                    print('Black is check mate!!!')
+                    break
             msg = self.ui.getMsg()
             if len(msg) == 1:
                 command = msg[0]
