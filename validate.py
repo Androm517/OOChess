@@ -34,11 +34,11 @@ class Validate:
     def isColorCheckMate(self, color, gameboard):
         squares = [i + j for i in 'abcdefgh' for j in '12345678']
         pieces = gameboard.getAllWhitePieces() if color == 'white' else gameboard.getAllBlackPieces()
-        for square in squares:
-            for piece in pieces:
+        for piece in pieces:
+            for square in squares:
                 if square == piece.getPosition():
                     continue
-                if self.validateMove(piece, piece.getPosition(), square, gameboard):
+                if self.validatePieceMove(piece, piece.getPosition(), square, gameboard):
                     if not self.isKingInCheckAfterMove(piece, piece.getPosition(), square, gameboard):
                         return False
         return True
@@ -99,7 +99,7 @@ class Validate:
 
     def validateKing(self, active_piece, at_position, to_position, unit_direction, gameboard):
         difference = at_position.subtract(to_position)
-        if difference.length() == 1:
+        if difference.length() > 0 and difference.length() < 3:
             return self.checkSquaresForBlockingPiecesRecursive(at_position, to_position.add(unit_direction), unit_direction, gameboard)
         else:
             return False
@@ -208,11 +208,13 @@ class Validate:
         else:
             gameboard.board_state[to_position] = passive_piece
         gameboard.board_state[at_position] = active_piece
+        active_piece.position = position.Position(at_position)
 
     def temporarelyMoveActivePiece(self, active_piece, at_position, to_position, gameboard):
         passive_piece = gameboard.getPieceAtPosition(to_position)
         del gameboard.board_state[at_position]
         gameboard.board_state[to_position] = active_piece
+        active_piece.position = position.Position(to_position)
         return passive_piece
 
     def convertStrPositionToObjPosition(self, *arg):
