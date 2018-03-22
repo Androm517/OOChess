@@ -12,15 +12,36 @@ class Validate:
 
     def validateMove(self, active_piece, at_position, to_position, gameboard):
         if self.validatePieceMove(active_piece, at_position, to_position, gameboard):
-            passive_piece = self.temporarelyMoveActivePiece(active_piece, at_position, to_position, gameboard)
-            king_is_in_check = self.isKingInCheck(active_piece, gameboard)
-            self.moveActivePiceBack(active_piece, passive_piece, at_position, to_position, gameboard)
-            if not king_is_in_check:
-                return True
-            else:
-                return False
+            return not self.isKingInCheckAfterMove(active_piece, at_position, to_position, gameboard)
         else:
             return False
+
+    def isKingInCheckAfterMove(self, active_piece, at_position, to_position, gameboard):
+        passive_piece = self.temporarelyMoveActivePiece(active_piece, at_position, to_position, gameboard)
+        king_is_in_check = self.isKingInCheck(active_piece, gameboard)
+        self.moveActivePiceBack(active_piece, passive_piece, at_position, to_position, gameboard)
+        if king_is_in_check:
+            return True
+        else:
+            return False
+
+    def isWhiteCheckMate(self, gameboard):
+        return self.isColorCheckMate('white', gameboard)
+
+    def isBlackCheckmate(self, gameboard):
+        return self.isColorCheckMate('black', gameboard)
+
+    def isColorCheckMate(self, color, gameboard):
+        squares = [i + j for i in 'abcdefgh' for j in '12345678']
+        pieces = gameboard.getAllWhitePieces() if color == 'white' else gameboard.getAllBlackPieces()
+        for square in squares:
+            for piece in pieces:
+                if square == piece.getPosition():
+                    continue
+                if self.validateMove(piece, piece.getPosition(), square, gameboard):
+                    if not self.isKingInCheckAfterMove(piece, piece.getPosition(), square, gameboard):
+                        return False
+        return True
 
     def validatePieceMove(self, active_piece, at_position, to_position, gameboard):
         validate_functions = {'pawn': self.validatePawn, 'rook': self.validateRook, 'knight': self.validateKnight,
@@ -93,9 +114,9 @@ class Validate:
             unit_direction = position.Position('a1')
             unit_direction.coordinates = (1, 0)
             if self.validatePieceMove(castle_rook, castle_rook.getPosition(), castle_king.getPosition(), gameboard):
-                pieces = gameboard.getAllBlackPieces() if color == 'white' else gameboard.getAllWhitePieces()
+                color = 'white' if color == 'white' else 'black'
                 squares = ['e1', 'f1', 'g1', 'h1'] if color == 'white' else ['e8', 'f8', 'g8', 'h8']
-                if self.isSquaresAttacked(pieces, squares, gameboard):
+                if self.isSquaresAttackedByColor(squares, color, gameboard):
                     return False
                 return True
             else:
@@ -123,9 +144,9 @@ class Validate:
             unit_direction = position.Position('a1')
             unit_direction.coordinates = (-1, 0)
             if self.validatePieceMove(castle_rook, castle_rook.getPosition(), castle_king.getPosition(), gameboard):
-                pieces = gameboard.getAllBlackPieces() if color == 'white' else gameboard.getAllWhitePieces()
+                color = 'white' if color == 'white' else 'black'
                 squares = ['a1', 'b1', 'c1', 'd1', 'e1'] if color == 'white' else ['a8', 'b8', 'c8', 'd8', 'e8']
-                if self.isSquaresAttacked(pieces, squares, gameboard):
+                if self.isSquaresAttackedByColor(squares, color, gameboard):
                     return False
                 return True
             else:
@@ -143,11 +164,10 @@ class Validate:
             return False
         return True
 
-    def isSquaresAttacked(self, pieces, squares, gameboard):
+    def isSquaresAttackedByColor(self, squares, color, gameboard):
         for square in squares:
-            for piece in pieces:
-                if self.validatePieceMove(piece, piece.getPosition(), square, gameboard):
-                    return True
+            if self.isSquareAttackedByColor(square, color, gameboard):
+                return True
         return False
 
     def setShortCastleFlagToFalse(self, piece):
@@ -172,9 +192,13 @@ class Validate:
 
     def isKingInCheck(self, active_piece, gameboard):
         king = gameboard.getWhiteKing() if active_piece.hasColor('white') else gameboard.getBlackKing()
-        pieces = gameboard.getAllBlackPieces() if active_piece.hasColor('white') else gameboard.getAllWhitePieces()
+        color = 'white' if active_piece.hasColor('white') else 'black'
+        return self.isSquareAttackedByColor(king.getPosition(), color, gameboard)
+
+    def isSquareAttackedByColor(self, square, color, gameboard):
+        pieces = gameboard.getAllBlackPieces() if color == 'white' else gameboard.getAllWhitePieces()
         for piece in pieces:
-            if self.validatePieceMove(piece, piece.getPosition(), king.getPosition(), gameboard):
+            if self.validatePieceMove(piece, piece.getPosition(), square, gameboard):
                 return True
         return False
 
