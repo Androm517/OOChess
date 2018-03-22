@@ -1,42 +1,49 @@
-
+"""
+class: Position
+"""
 
 
 class Position:
+    """Represents a position on the chessboards as coordinates (x, y) where x and y are integers."""
     def __init__(self, coordinates):
         self.coordinates = (ord(coordinates[0]) - ord('a'), ord(coordinates[1]) - ord('1') )
+
+    def createPositionWithCoordinates(self, x, y):
+        tmp = Position('a1')
+        tmp.coordinates = (x, y)
+        return tmp
 
     def changePositionTo(self, position):
         col, row = position.coordinates
         self.coordinates = (col, row)
 
-    def subtract(self, position):
-        x = self.coordinates[0] - position.coordinates[0]
-        y = self.coordinates[1] - position.coordinates[1]
+    def subtract(self, second_position):
+        """Subtract second position from position, position - second_position"""
+        x = self.coordinates[0] - second_position.coordinates[0]
+        y = self.coordinates[1] - second_position.coordinates[1]
         tmp = self.createPositionWithCoordinates(x, y)
         return tmp
 
-    def add(self, position):
-        x = self.coordinates[0] + position.coordinates[0]
-        y = self.coordinates[1] + position.coordinates[1]
+    def add(self, second_position):
+        """Add second position to position, position + second_position"""
+        x = self.coordinates[0] + second_position.coordinates[0]
+        y = self.coordinates[1] + second_position.coordinates[1]
         tmp = self.createPositionWithCoordinates(x, y)
         return tmp
 
     def invert(self):
+        """Reflect position in origo"""
         x = -self.coordinates[0]
         y = -self.coordinates[1]
         tmp = self.createPositionWithCoordinates(x, y)
         return tmp
 
-    def equals(self, chessboard_position):
-        if str(self) == chessboard_position:
-            return True
-        else:
-            return False
-
     def length(self):
+        """Taxicab geometry."""
         return int(abs(self.coordinates[0]) + abs(self.coordinates[1]))
 
     def unit(self):
+        """create a chess unit vector"""
         col, row = self.coordinates
         tmp = Position('a1')
         tmp.coordinates = (13, 17)
@@ -49,11 +56,12 @@ class Position:
         return tmp
 
     def rowLength(self):
+        """Row length"""
         col, row = self.coordinates
         return int(abs(row))
 
-
     def columnLength(self):
+        """Column length"""
         col, row = self.coordinates
         return int(abs(col))
 
@@ -70,7 +78,3 @@ class Position:
         col, row = chr( col + ord('a')), chr( row + ord('1'))
         return col + row
 
-    def createPositionWithCoordinates(self, x, y):
-        tmp = Position('a1')
-        tmp.coordinates = (x, y)
-        return tmp
