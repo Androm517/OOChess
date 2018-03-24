@@ -52,4 +52,4 @@ class Gameboard:
                     s += tmp.getPieceSymbol()
                 else:
                     s += '#'
-        print(s)
+        return s
