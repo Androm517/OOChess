@@ -7,8 +7,8 @@ import validate
 class Program:
     def __init__(self):
         self.ui = userinput.UserInput()
-        self.gb = gameboard.Gameboard()
-        self.vm = validate.Validate()
+        self.gameboard = gameboard.Gameboard()
+        self.validator = validate.Validate()
         self.color = 'white'
 
         self.captured_pieces = []
@@ -33,7 +33,7 @@ class Program:
         self.black_pieces.append(piece.Piece('e8', name='king', color='black', name_representation='\u265A'))
 
     def capture(self, to_position):
-        passive_piece = self.gb.getPieceAtPosition(to_position)
+        passive_piece = self.gameboard.getPieceAtPosition(to_position)
         if passive_piece is not None:
             if passive_piece.hasColor('white'):
                 self.white_pieces.remove(passive_piece)
@@ -43,50 +43,56 @@ class Program:
 
     def moveAtPositionToPositionAndCapture(self, at_position, to_position):
         self.capture(to_position)
-        active_piece = self.gb.getPieceAtPosition(at_position)
+        active_piece = self.gameboard.getPieceAtPosition(at_position)
         active_piece.changePositionTo(to_position)
 
     def validateMove(self, color, at_position, to_position):
-        active_piece = self.gb.getPieceAtPosition(at_position)
-        passive_piece = self.gb.getPieceAtPosition(to_position)
+        active_piece = self.gameboard.getPieceAtPosition(at_position)
+        passive_piece = self.gameboard.getPieceAtPosition(to_position)
         if active_piece is None or not active_piece.hasColor(color):
             return False
         if passive_piece is not None and passive_piece.hasColor(color):
             return False
-        if self.vm.validateMove(active_piece, at_position, to_position, self.gb):
+        if self.validator.validateMove(active_piece, at_position, to_position, self.gameboard):
             return True
         else:
             return False
 
     def updateAndViewBoard(self):
-        self.gb.updateBoardState(self.white_pieces + self.black_pieces)
-        self.gb.viewBoard()
+        self.updateBoardState()
+        print(self.viewBoard())
         print()
+
+    def updateBoardState(self):
+        self.gameboard.updateBoardState(self.white_pieces + self.black_pieces)
+
+    def viewBoard(self):
+        return self.gameboard.viewBoard()
 
     def validateSpecialRuleCommandAndMovePiece(self, msg):
         if msg == 'short castle':
-            if self.vm.validateShortCastle(self.color, self.gb):
-                castle_king = self.gb.getWhiteKing() if self.color == 'white' else self.gb.getBlackKing()
+            if self.validator.validateShortCastle(self.color, self.gameboard):
+                castle_king = self.gameboard.getWhiteKing() if self.color == 'white' else self.gameboard.getBlackKing()
                 move_rook = ['h1', 'f1'] if castle_king.hasColor('white') else ['h8', 'f8']
                 move_king = ['e1', 'g1'] if castle_king.hasColor('white') else ['e8', 'g8']
                 self.moveAtPositionToPositionAndCapture(move_rook[0], move_rook[1])
                 self.moveAtPositionToPositionAndCapture(move_king[0], move_king[1])
-                self.vm.setShortCastleFlagToFalse(castle_king)
+                self.validator.setShortCastleFlagToFalse(castle_king)
                 return True
         elif msg == 'long castle':
-            if self.vm.validateLongCastle(self.color, self.gb):
-                castle_king = self.gb.getWhiteKing() if self.color == 'white' else self.gb.getBlackKing()
+            if self.validator.validateLongCastle(self.color, self.gameboard):
+                castle_king = self.gameboard.getWhiteKing() if self.color == 'white' else self.gameboard.getBlackKing()
                 move_rook = ['a1', 'd1'] if castle_king.hasColor('white') else ['a8', 'd8']
                 move_king = ['e1', 'c1'] if castle_king.hasColor('white') else ['e8', 'c8']
                 self.moveAtPositionToPositionAndCapture(move_rook[0], move_rook[1])
                 self.moveAtPositionToPositionAndCapture(move_king[0], move_king[1])
-                self.vm.setLongCastleFlagToFalse(castle_king)
+                self.validator.setLongCastleFlagToFalse(castle_king)
                 return True
         elif 'en passant' in msg:
             msg = msg.split()
-            active_piece = self.gb.getPieceAtPosition(msg[2])
-            if self.vm.validateEnPassant(active_piece):
-                passive_piece = self.vm.en_passant_white if active_piece.hasColor('white') else self.vm.en_passant_black
+            active_piece = self.gameboard.getPieceAtPosition(msg[2])
+            if self.validator.validateEnPassant(active_piece):
+                passive_piece = self.validator.en_passant_white if active_piece.hasColor('white') else self.validator.en_passant_black
                 target_row = '6' if active_piece.hasColor('white') else '3'
                 target = passive_piece.getPosition()[0] + target_row
                 self.moveAtPositionToPositionAndCapture(active_piece.getPosition(), target)
@@ -96,11 +102,11 @@ class Program:
 
     def validateMoveAndMovePiece(self, color, at_position, to_position):
         if self.validateMove(color, at_position, to_position):
-            active_piece = self.gb.getPieceAtPosition(at_position)
+            active_piece = self.gameboard.getPieceAtPosition(at_position)
             if active_piece.hasName('pawn') and '2' in at_position and '4' in to_position:
-                self.vm.en_passant_black = active_piece
+                self.validator.en_passant_black = active_piece
             if active_piece.hasName('pawn') and '7' in at_position and '5' in to_position:
-                self.vm.en_passant_white = active_piece
+                self.validator.en_passant_white = active_piece
             self.moveAtPositionToPositionAndCapture(at_position, to_position)
             return True
         else:
@@ -121,11 +127,11 @@ class Program:
         while True:
             change_player_color = False
             if self.color == 'white':
-                if self.vm.isWhiteCheckMate(self.gb):
+                if self.validator.isWhiteCheckMate(self.gameboard):
                     print('White is check mate!!!')
                     break
             else:
-                if self.vm.isBlackCheckmate(self.gb):
+                if self.validator.isBlackCheckmate(self.gameboard):
                     print('Black is check mate!!!')
                     break
             msg = self.ui.getMsg()
@@ -139,9 +145,9 @@ class Program:
                 change_player_color = self.validateMoveAndMovePiece(self.color, at_position, to_position)
             if change_player_color:
                 if self.color == 'white':
-                    self.vm.en_passant_white = None
+                    self.validator.en_passant_white = None
                 else:
-                    self.vm.en_passant_black = None
+                    self.validator.en_passant_black = None
                 self.color = 'black' if self.color == 'white' else 'white'
             self.updateAndViewBoard()
     
