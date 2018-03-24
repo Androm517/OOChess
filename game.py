@@ -35,19 +35,22 @@ class Server:
         self.player_color = WHITE
 
     def makeMove(self, player, msg):
-        at, to = msg
-        try:
-            with self.boardLock:
-                if player.color == self.player_color:
-                    if self.program.validateMoveAndMovePiece(player.color, at, to):
-                        self.player_color = WHITE if player.color == WHITE else BLACK
-            player.opponent.tell('{} made a move, your turn.'.format(player.color))
-            self.program.updateBoardState()
-            player.opponent.tell(self.program.viewBoard())
-            player.tell(self.program.viewBoard())
-        except Exception as e:
-            logger.exception(e)
-            return str(e)
+        if len[msg] == 2:
+            at, to = msg
+            try:
+                with self.boardLock:
+                    if player.color == self.player_color:
+                        if self.program.validateMoveAndMovePiece(player.color, at, to):
+                            self.player_color = BLACK if player.color == WHITE else WHITE
+                            player.opponent.tell('{} made a move, your turn.'.format(player.color))
+                            self.program.updateBoardState()
+                            player.opponent.tell(self.program.viewBoard())
+                            player.tell(self.program.viewBoard())
+                    else:
+                        player.tell('Not your turn')
+            except Exception as e:
+                logger.exception(e)
+                return str(e)
 
     def give_up(self, player, msg):
         raise NotImplemented()
