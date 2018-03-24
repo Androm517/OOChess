@@ -41,11 +41,7 @@ class Server:
                 with self.boardLock:
                     if player.color == self.player_color:
                         if self.program.validateMoveAndMovePiece(player.color, at, to):
-                            self.player_color = BLACK if player.color == WHITE else WHITE
-                            player.opponent.tell('{} made a move, your turn.'.format(player.color))
-                            self.program.updateBoardState()
-                            player.opponent.tell(self.program.viewBoard())
-                            player.tell(self.program.viewBoard())
+                            self.switchPlayerUpdateBoardTellPlayers(player)
                     else:
                         player.tell('Not your turn')
             except Exception as e:
@@ -61,6 +57,13 @@ class Server:
     def say(self, player, msg):
         print(f'say.msg: {msg}')
         player.opponent.tell(' '.join(msg))
+
+    def switchPlayerUpdateBoardTellPlayers(self, player):
+        self.player_color = BLACK if player.color == WHITE else WHITE
+        player.opponent.tell('{} made a move, your turn.'.format(player.color))
+        self.program.updateBoardState()
+        player.opponent.tell(self.program.viewBoard())
+        player.tell(self.program.viewBoard())
 
     # start server and stuff... as someone connects add a player to the list of players
     def run(self):
