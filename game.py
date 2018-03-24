@@ -32,12 +32,15 @@ class Server:
             'say': self.say,
             'print': lambda p: str('Hello, world')
         }
+        self.player_color = WHITE
 
     def makeMove(self, player, msg):
         at, to = msg
         try:
             with self.boardLock:
-                self.program.validateMoveAndMovePiece(player.color, at, to)
+                if player.color == self.player_color:
+                    if self.program.validateMoveAndMovePiece(player.color, at, to):
+                        self.player_color = WHITE if player.color == WHITE else BLACK
             player.opponent.tell('{} made a move, your turn.'.format(player.color))
             self.program.updateBoardState()
             player.opponent.tell(self.program.viewBoard())
