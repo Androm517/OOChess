@@ -70,7 +70,7 @@ class Program:
         return self.gameboard.viewBoard()
 
     def validateSpecialRuleCommandAndMovePiece(self, msg):
-        if msg == 'short castle':
+        if msg == 'castle short':
             if self.validator.validateShortCastle(self.color, self.gameboard):
                 castle_king = self.gameboard.getWhiteKing() if self.color == 'white' else self.gameboard.getBlackKing()
                 move_rook = ['h1', 'f1'] if castle_king.hasColor('white') else ['h8', 'f8']
@@ -79,7 +79,7 @@ class Program:
                 self.moveAtPositionToPositionAndCapture(move_king[0], move_king[1])
                 self.validator.setShortCastleFlagToFalse(castle_king)
                 return True
-        elif msg == 'long castle':
+        elif msg == 'castle long':
             if self.validator.validateLongCastle(self.color, self.gameboard):
                 castle_king = self.gameboard.getWhiteKing() if self.color == 'white' else self.gameboard.getBlackKing()
                 move_rook = ['a1', 'd1'] if castle_king.hasColor('white') else ['a8', 'd8']
