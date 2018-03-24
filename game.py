@@ -35,7 +35,7 @@ class Server:
         self.player_color = WHITE
 
     def makeMove(self, player, msg):
-        if len[msg] == 2:
+        if len(msg) == 2:
             at, to = msg
             try:
                 with self.boardLock:
