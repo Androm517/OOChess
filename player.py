@@ -20,10 +20,8 @@ class Player(threading.Thread):
             if not r:
                 break
             msg = r
-            print(msg)
             msg = msg.decode('utf-8')
             msg = msg.split()
-            print(msg)
             func = self.commands.get(msg[0], None)
             if func is not None:
                func(self, msg[1:])
