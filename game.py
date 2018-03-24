@@ -46,10 +46,10 @@ class Server:
             logger.exception(e)
             return str(e)
 
-    def give_up(self, player):
+    def give_up(self, player, msg):
         raise NotImplemented()
 
-    def castle(self, player, where):
+    def castle(self, player, msg):
         raise NotImplemented()
 
     def say(self, player, msg):
