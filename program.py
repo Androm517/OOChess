@@ -94,8 +94,8 @@ class Program:
                 return True
         return False
 
-    def validateMoveAndMovePiece(self, at_position, to_position):
-        if self.validateMove(self.color, at_position, to_position):
+    def validateMoveAndMovePiece(self, color, at_position, to_position):
+        if self.validateMove(color, at_position, to_position):
             active_piece = self.gb.getPieceAtPosition(at_position)
             if active_piece.hasName('pawn') and '2' in at_position and '4' in to_position:
                 self.vm.en_passant_black = active_piece
@@ -136,7 +136,7 @@ class Program:
                 change_player_color = self.validateSpecialRuleCommandAndMovePiece(command)
             elif len(msg) == 2:
                 at_position, to_position = msg
-                change_player_color = self.validateMoveAndMovePiece(at_position, to_position)
+                change_player_color = self.validateMoveAndMovePiece(self.color, at_position, to_position)
             if change_player_color:
                 if self.color == 'white':
                     self.vm.en_passant_white = None
