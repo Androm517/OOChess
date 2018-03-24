@@ -24,5 +24,7 @@ class Player(threading.Thread):
             msg = msg.decode('utf-8')
             msg = msg.split()
             print(msg)
-            self.commands[msg[0]](self, msg[1:])
+            func = self.commands.get(msg[0], None)
+            if func is not None:
+               func(self, msg[1:])
         sys.exit(-1)
