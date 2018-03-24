@@ -3,7 +3,7 @@ import threading
 import logging
 import random
 
-from piece import Piece
+import program
 from player import Player
 
 WHITE = 'white'
@@ -22,6 +22,7 @@ class Server:
     def __init__(self):
         self.players = []
         self.boardLock = threading.Lock()
+        self.program = program.Program()
         self.started = False
         self.commands = {
             'move': self.makeMove,
@@ -29,16 +30,18 @@ class Server:
             'yield': self.give_up,
             'castle': self.castle,
             'say': self.say,
-            'print': lambda p: str(self.board)
+            'print': lambda p: str('Hello, world')
         }
 
-    def makeMove(self, player, at, to):
+    def makeMove(self, player, msg):
+        at, to = msg
         try:
             with self.boardLock:
-                pass
+                self.program.validateMoveAndMovePiece(player.color, at, to)
             player.opponent.tell('{} made a move, your turn.'.format(player.color))
-            player.opponent.tell()
-            return None
+            self.program.updateBoardState()
+            player.opponent.tell(self.program.viewBoard())
+            player.tell(self.program.viewBoard())
         except Exception as e:
             logger.exception(e)
             return str(e)
@@ -52,7 +55,6 @@ class Server:
     def say(self, player, msg):
         print(f'say.msg: {msg}')
         player.opponent.tell(' '.join(msg))
-        return None
 
     # start server and stuff... as someone connects add a player to the list of players
     def run(self):
@@ -86,6 +88,9 @@ class Server:
                     self.players[0].opponent = self.players[1]
                     self.players[1].opponent = self.players[0]
                     self.game_started = True
+                    self.program.updateBoardState()
+                    for player in self.players:
+                        player.tell(self.program.viewBoard())
 
             except KeyboardInterrupt:
                 break
