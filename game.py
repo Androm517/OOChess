@@ -3,14 +3,12 @@ import threading
 import logging
 import random
 
-from chessboard import Chessboard
 from piece import Piece
 from player import Player
-from exceptions import ChessException
 
-BLACK = Piece.BLACK
-WHITE = Piece.WHITE
-COLORS = Piece.COLORS
+WHITE = 'white'
+BLACK = 'black'
+COLORS = [WHITE, BLACK]
 
 BIND_IP = '0.0.0.0'
 BIND_PORT = 9999
@@ -24,7 +22,6 @@ class Server:
     def __init__(self):
         self.players = []
         self.boardLock = threading.Lock()
-        self.board = Chessboard()
         self.started = False
         self.commands = {
             'move': self.makeMove,
@@ -38,12 +35,10 @@ class Server:
     def makeMove(self, player, at, to):
         try:
             with self.boardLock:
-                self.board.movePiece(player.color, at, to)
+                pass
             player.opponent.tell('{} made a move, your turn.'.format(player.color))
-            player.opponent.tell(str(self.board))
-            return self.board
-        except ChessException as e:
-            return str(e)
+            player.opponent.tell()
+            return None
         except Exception as e:
             logger.exception(e)
             return str(e)
@@ -54,8 +49,8 @@ class Server:
     def castle(self, player, where):
         raise NotImplemented()
 
-    def say(self, player, *msg):
-        msg = list(msg)
+    def say(self, player, msg):
+        print(f'say.msg: {msg}')
         player.opponent.tell(' '.join(msg))
         return None
 
