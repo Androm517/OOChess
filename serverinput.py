@@ -18,10 +18,9 @@ class ServerInput:
             return ' '.join(parsed)
         elif arg == 'move':
             parsed.append(arg)
-            arg = msg.pop(0)
-            self.parseSquareKeywords(arg, parsed)
-            arg = msg.pop(0)
-            self.parseSquareKeywords(arg, parsed)
+            for i in range(2):
+                arg = msg.pop(0)
+                self.parseSquareKeywords(arg, parsed)
             return ' '.join(parsed)
         elif arg == 'en':
             parsed.append(arg)
